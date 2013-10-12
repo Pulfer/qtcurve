@@ -4,7 +4,9 @@ set(qtcurve_utils_SRCS
   log.c
   utils.c
   strs.c
-  ini-parse.c)
+  ini-parse.c
+  conf-desc.c
+  conf-file.c)
 set(qtcurve_utils_LINKS
   m)
 
