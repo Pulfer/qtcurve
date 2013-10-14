@@ -3,7 +3,8 @@ set(qtcurve_utils_SRCS
   dirs.c
   log.c
   utils.c
-  strs.c)
+  strs.c
+  ini-parse.c)
 set(qtcurve_utils_LINKS
   m)
 
