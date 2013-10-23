@@ -291,6 +291,50 @@ qtcIniGroupGetBool(QtcIniGroup *grp, const char *name, bool def)
     return qtcStrToBool(qtcIniGroupGetValue(grp, name), def);
 }
 
+static inline long
+qtcIniGroupGetIntWithLen(QtcIniGroup *grp, const char *name,
+                         size_t len, long def)
+{
+    const char *value = qtcIniGroupGetValueWithLen(grp, name, len);
+    if (!value) {
+        return def;
+    }
+    value += strspn(value, " \t\b\n\f\v");
+    char *end = NULL;
+    long res = strtol(value, &end, 0);
+    if (end == value) {
+        res = def;
+    }
+    return res;
+}
+static inline long
+qtcIniGroupGetInt(QtcIniGroup *grp, const char *name, long def)
+{
+    return qtcIniGroupGetIntWithLen(grp, name, strlen(name), def);
+}
+
+static inline double
+qtcIniGroupGetFloatWithLen(QtcIniGroup *grp, const char *name,
+                           size_t len, double def)
+{
+    const char *value = qtcIniGroupGetValueWithLen(grp, name, len);
+    if (!value) {
+        return def;
+    }
+    value += strspn(value, " \t\b\n\f\v");
+    char *end = NULL;
+    double res = strtod(value, &end);
+    if (end == value) {
+        res = def;
+    }
+    return res;
+}
+static inline double
+qtcIniGroupGetFloat(QtcIniGroup *grp, const char *name, double def)
+{
+    return qtcIniGroupGetFloatWithLen(grp, name, strlen(name), def);
+}
+
 QTC_END_DECLS
 
 #endif
