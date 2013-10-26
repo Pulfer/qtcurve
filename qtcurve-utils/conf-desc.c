@@ -184,8 +184,7 @@ _qtcConfDescLoadConstrain(QtcConfValueDesc *vdesc, QtcIniGroup *ini_grp)
         for (;;i++) {
             const unsigned base_len =
                 strlen("Enum") + sprintf(enum_opt + strlen("Enum"), "%u", i);
-            char *enum_id = qtcIniGroupDupValueWithLen(ini_grp, enum_opt,
-                                                       base_len);
+            char *enum_id = qtcIniGroupDupValue(ini_grp, enum_opt, base_len);
             if (!enum_id) {
                 break;
             }
@@ -196,7 +195,7 @@ _qtcConfDescLoadConstrain(QtcConfValueDesc *vdesc, QtcIniGroup *ini_grp)
             }
             enum_descs[i].id = enum_id;
             memcpy(enum_opt + base_len, ".Name", sizeof(".Name"));
-            enum_descs[i].name = qtcIniGroupDupValueWithLen(
+            enum_descs[i].name = qtcIniGroupDupValue(
                 ini_grp, enum_opt, base_len + strlen(".Name"));
         }
         if (i) {

@@ -169,8 +169,7 @@ _qtcConfGroupDescFind(QtcConfFileDesc *conf_desc, const char *name)
     return qtcConfGroupDescFind(conf_desc, name, strlen(name));
 }
 #define qtcConfGroupDescFind(conf_desc, name, name_len...)              \
-    _QTC_USE_12(name_len)(qtcConfGroupDescFind(conf_desc, name, name_len), \
-                          _qtcConfGroupDescFind(conf_desc, name))
+    QTC_SWITCH_(name_len, qtcConfGroupDescFind)(conf_desc, name, ##name_len)
 
 QtcConfOptionDesc *qtcConfOptionDescFind(
     QtcConfGroupDesc *grp_desc, const char *name, size_t name_len);
@@ -180,8 +179,7 @@ _qtcConfOptionDescFind(QtcConfGroupDesc *grp_desc, const char *name)
     return qtcConfOptionDescFind(grp_desc, name, strlen(name));
 }
 #define qtcConfOptionDescFind(grp_desc, name, name_len...)              \
-    _QTC_USE_12(name_len)(qtcConfOptionDescFind(grp_desc, name, name_len), \
-                          _qtcConfOptionDescFind(grp_desc, name))
+    QTC_SWITCH_(name_len, qtcConfOptionDescFind)(grp_desc, name, ##name_len)
 
 QTC_END_DECLS
 
