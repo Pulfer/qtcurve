@@ -178,7 +178,7 @@ _qtcConfDescLoadConstrain(QtcConfValueDesc *vdesc, QtcIniGroup *ini_grp)
         return;
     case QTC_CONF_ENUM: {
         unsigned i = 0;
-        char enum_opt[sizeof("Enum.Name") + sizeof(int) * 8] = "Enum";
+        char enum_opt[sizeof("Enum.EnumName") + sizeof(int) * 8] = "Enum";
         unsigned enum_alloc = 8;
         QtcConfEnumDesc *enum_descs = qtcNewN(QtcConfEnumDesc, enum_alloc);
         for (;;i++) {
@@ -197,12 +197,16 @@ _qtcConfDescLoadConstrain(QtcConfValueDesc *vdesc, QtcIniGroup *ini_grp)
             memcpy(enum_opt + base_len, ".Name", sizeof(".Name"));
             enum_descs[i].name = qtcIniGroupDupValue(
                 ini_grp, enum_opt, base_len + strlen(".Name"));
+            memcpy(enum_opt + base_len, ".EnumName", sizeof(".EnumName"));
+            enum_descs[i].enum_name = qtcIniGroupDupValue(
+                ini_grp, enum_opt, base_len + strlen(".EnumName"));
         }
         if (i) {
             enum_descs = realloc(enum_descs, i * sizeof(QtcConfEnumDesc));
         }
         constrain->enum_c.num = i;
         constrain->enum_c.descs = enum_descs;
+        constrain->enum_c.enum_type = qtcIniGroupDupValue(ini_grp, "EnumType");
         break;
     }
     case QTC_CONF_FLOAT:
@@ -347,6 +351,9 @@ _qtcConfDescLoadOption(QtcConfOptionDesc *opt_desc, QtcIniGroup *ini_grp)
     if (qtcIniGroupGetBool(ini_grp, "Advanced", false)) {
         opt_desc->flags |= QTC_CONF_OP_ADVANCED;
     }
+    if (qtcIniGroupGetBool(ini_grp, "Deprecated", false)) {
+        opt_desc->flags |= QTC_CONF_OP_DEPRECATED;
+    }
     QtcConfValueDesc *vdesc = &opt_desc->vdesc;
     vdesc->type = _qtcConfLoadType(qtcIniGroupGetValue(ini_grp, "Type"));
     _qtcConfDescLoadConstrain(vdesc, ini_grp);
@@ -441,7 +448,9 @@ qtcConfValueDescConstrainFree(QtcConfValueDesc *vdesc)
         for (unsigned i = 0;i < constrain->enum_c.num;i++) {
             free(constrain->enum_c.descs[i].id);
             qtcFree(constrain->enum_c.descs[i].name);
+            qtcFree(constrain->enum_c.descs[i].enum_name);
         }
+        qtcFree(constrain->enum_c.enum_type);
         free(constrain->enum_c.descs);
     }
 }

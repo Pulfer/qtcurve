@@ -39,6 +39,7 @@ typedef enum {
 typedef struct {
     char *id;
     char *name;
+    char *enum_name;
 } QtcConfEnumDesc;
 
 typedef union {
@@ -53,6 +54,8 @@ typedef union {
     struct {
         unsigned num;
         QtcConfEnumDesc *descs;
+
+        char *enum_type;
     } enum_c;
     struct {
         double min;
@@ -124,7 +127,10 @@ typedef struct {
 } QtcConfValueDesc;
 
 typedef enum {
+    // Hidden by default
     QTC_CONF_OP_ADVANCED = (1 << 0),
+    // Replaced by other options, kept just for backward compatibility.
+    QTC_CONF_OP_DEPRECATED = (1 << 1),
 } QtcConfOptionFlags;
 
 // Keep the name field as the first one in both group and option structure
